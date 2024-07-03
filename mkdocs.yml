@@ -1,0 +1,48 @@
+site_name: Aquarium Docs
+
+theme:
+  name: material
+  font:
+    text: Noto Sans JP
+    code: Inconsolata
+  palette:
+    - scheme: default
+      primary: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.top
+
+extra:
+  alternate:
+    - name: English
+      link: /en/
+      lang: en
+    - name: Japanese
+      link: /jp/
+      lang: ja
+
+plugins:
+  search:
+    lang: "ja"
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      use_pygments: true
+      noclasses: true
+      pygments_style: monokai
+      linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+docs_dir: docsrc
+site_dir: docs/docs
