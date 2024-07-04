@@ -1,6 +1,6 @@
-# Aquarium
+# Aquarium (Under dev)
 
-Powered by Aqua & GO
+Powered by Aqua & Go
 
 [Aqua](https://github.com/e6nlaq/aqua) by Sakamotor, licensed by MIT License
 

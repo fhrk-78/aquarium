@@ -1,2 +1,7 @@
 src/linux
 src/windows
+
+**/tmp.aqua
+**/cache/*
+
+.vscode/*
