@@ -1,1 +1,8 @@
-out "Hello, world!"
+var int n 7
+
+set n :
+    + n 8
+
+out "<h1>7+8="
+out n
+out "</h1>"

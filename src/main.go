@@ -7,22 +7,58 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"regexp"
 	"slices"
 )
 
+// ファイルを修正する
+func writetmp(target string) {
+	rfs, errr := os.ReadFile(target)
+	if errr != nil {
+		fmt.Println("[!ERR] Read: " + errr.Error())
+		return
+	}
+
+	wfs, erro := os.Create("tmp.aqua")
+	if erro != nil {
+		fmt.Println("[!ERR] Open: " + erro.Error())
+		return
+	}
+	_, errw := wfs.Write([]byte(FileNewlineCharConvert(string(rfs))))
+	if errw != nil {
+		fmt.Println("[!ERR] Write: " + errw.Error())
+		return
+	}
+	defer func() {
+		errc := wfs.Close()
+		if errc != nil {
+			fmt.Println("[!ERR] Close: " + errc.Error())
+		}
+	}()
+}
+
 // Aquaで実行する
-func aqua(target string) string {
-	aq := exec.Command("aqua", target, "--yes ")
+func aqua() string {
+	abp, err := filepath.Abs(`tmp.aqua`)
+	if err != nil {
+		fmt.Println("[!ERR] Path: " + err.Error())
+	} else {
+		fmt.Println("[INFO] aqua " + "\"" + abp + "\" --yes")
+	}
+
+	aq := exec.Command("powershell", "aqua", "\""+abp+"\"", "--yes")
 
 	var aqout bytes.Buffer
+	var aqerr bytes.Buffer
 	aq.Stdout = &aqout
+	aq.Stderr = &aqerr
 
-	err := aq.Run()
+	aq.Start()
+	err = aq.Wait()
 
 	if err != nil {
-		fmt.Println("[!ERR] " + aqout.String())
-		os.Exit(1)
+		fmt.Println("[!ERR] Aqua: " + aqout.String() + " " + aqerr.String())
 	}
 
 	return regexp.MustCompile(`\x1b\[[0-9;]*m`).ReplaceAllString(aqout.String(), "")
@@ -45,6 +81,13 @@ func serve(prod bool, host string, port string) {
 			routings_path = append(routings_path, RemoveFirstAndLast(cvals[i]))
 			routings_pattern = append(routings_pattern, ReplacePathCharacter(ckeys[i]))
 			fmt.Println("[ LOG] Registered Routings: " + ckeys[i] + " : " + cvals[i])
+			abp, err := filepath.Abs(path.Join("pages", RemoveFirstAndLast(cvals[i])))
+			if err != nil {
+				fmt.Println("[!ERR] " + err.Error())
+			}
+			if err != nil {
+				fmt.Println("[!ERR] " + abp + " : " + err.Error())
+			}
 		}
 	}
 
@@ -52,7 +95,8 @@ func serve(prod bool, host string, port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if slices.Contains(routings_pattern, r.RequestURI) && r.Method == "GET" {
 			raddress := slices.Index(routings_pattern, r.RequestURI)
-			bytes := []byte(aqua(path.Join("pages", routings_path[raddress])))
+			writetmp(path.Join("pages", routings_path[raddress]))
+			bytes := []byte(aqua())
 			_, err := w.Write(bytes)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -62,7 +106,8 @@ func serve(prod bool, host string, port string) {
 			}
 		} else if slices.Contains(routings_pattern, "404") {
 			raddress := slices.Index(routings_pattern, "404")
-			bytes := []byte(aqua(path.Join("pages", routings_path[raddress])))
+			writetmp(path.Join("pages", routings_path[raddress]))
+			bytes := []byte(aqua())
 			_, err := w.Write(bytes)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -81,8 +126,8 @@ func serve(prod bool, host string, port string) {
 			}
 		}
 	})
-	fmt.Println("[INFO] Server started on " + host + ":" + port + " !")
-	fmt.Println(http.ListenAndServe(host+":"+port, nil))
+
+	http.ListenAndServe(host+":"+port, nil)
 }
 
 func build() {

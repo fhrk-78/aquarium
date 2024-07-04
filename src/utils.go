@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -39,6 +40,13 @@ func RemoveFirstAndLast(s string) string {
 	return ""
 }
 
+// パスの文字変換関数
 func ReplacePathCharacter(s string) string {
 	return strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(s, "_s_", "/"), "_u_", "_"), "_d_", ".")
+}
+
+// ^\n を 結合する関数
+func FileNewlineCharConvert(s string) string {
+	//return strings.ReplaceAll(s, "\\\n", "")
+	return regexp.MustCompile(`\\[\x00-\x1F]\n`).ReplaceAllString(s, "")
 }
