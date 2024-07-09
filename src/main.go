@@ -58,7 +58,7 @@ func aqua() string {
 	err = aq.Wait()
 
 	if err != nil {
-		fmt.Println("[!ERR] Aqua: " + aqout.String() + " " + aqerr.String())
+		fmt.Println("[!ERR] Aqua: " + aqerr.String())
 	}
 
 	return regexp.MustCompile(`\x1b\[[0-9;]*m`).ReplaceAllString(aqout.String(), "")
