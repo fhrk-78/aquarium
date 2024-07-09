@@ -64,7 +64,7 @@ func aqua() string {
 	return regexp.MustCompile(`\x1b\[[0-9;]*m`).ReplaceAllString(aqout.String(), "")
 }
 
-func serve(prod bool, host string, port string) {
+func serve(host string, port string) {
 	// Read Config File
 	routings_pattern := []string{}
 	routings_path := []string{}
@@ -136,15 +136,12 @@ func build() {
 
 func main() {
 	if len(os.Args) == 1 {
-		serve(false, "localhost", "8000")
+		serve("localhost", "8000")
 	} else {
 		switch os.Args[1] {
-		case "prod":
 		case "serve":
-			serve(true, os.Args[2], os.Args[3])
-			return
 		case "dev":
-			serve(false, os.Args[2], os.Args[3])
+			serve(os.Args[2], os.Args[3])
 			return
 		case "build":
 			build()
