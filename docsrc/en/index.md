@@ -9,7 +9,7 @@ You can download installer from [here](https://e6nlaq.github.io/aqua/)
 
 ## 2. Install Aquarium
 
-1. Download zip file from [here](https://github.com/fhrk-78/aqua-aquarium/releases)
+1. Download zip (OR gz) file from [here](https://github.com/fhrk-78/aqua-aquarium/releases)
 
 2. Extract that
 

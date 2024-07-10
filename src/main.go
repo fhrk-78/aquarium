@@ -65,9 +65,12 @@ func aqua() string {
 }
 
 func serve(host string, port string) {
-	// Read Config File
+	// ルーティングのパターン
 	routings_pattern := []string{}
+	// ルーティングのパス
 	routings_path := []string{}
+	// ルーティングは実行する必要があるか
+	routings_isaqua := []bool{}
 
 	rf, err := os.ReadFile(".aquarium")
 
@@ -78,31 +81,63 @@ func serve(host string, port string) {
 	ckeys, cvals, ctypes := GetVars(string(rf))
 	for i := 0; i < len(ckeys); i++ {
 		if ctypes[i] == "routing" {
+			// ルーティングを追加
 			routings_path = append(routings_path, RemoveFirstAndLast(cvals[i]))
 			routings_pattern = append(routings_pattern, ReplacePathCharacter(ckeys[i]))
+			routings_isaqua = append(routings_isaqua, true)
 			fmt.Println("[ LOG] Registered Routings: " + ckeys[i] + " : " + cvals[i])
 			abp, err := filepath.Abs(path.Join("pages", RemoveFirstAndLast(cvals[i])))
-			if err != nil {
-				fmt.Println("[!ERR] " + err.Error())
-			}
 			if err != nil {
 				fmt.Println("[!ERR] " + abp + " : " + err.Error())
 			}
 		}
 	}
 
+	// 静的ファイルの探索
+	werr := filepath.Walk("public", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println("[!ERR] Publicfiles: " + err.Error())
+			return err
+		}
+		if !info.IsDir() {
+			// ディレクトリでなければ
+			routings_path = append(routings_path, path)
+			routings_pattern = append(routings_pattern, "/"+path[7:])
+			routings_isaqua = append(routings_isaqua, false)
+			fmt.Println("[ LOG] Registered Routings: /" + path[7:])
+			return nil
+		}
+		return nil
+	})
+
+	if werr != nil {
+		fmt.Println("[!ERR] Publicfiles: []" + err.Error())
+	}
+
 	// Start Server
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if slices.Contains(routings_pattern, r.RequestURI) && r.Method == "GET" {
 			raddress := slices.Index(routings_pattern, r.RequestURI)
-			writetmp(path.Join("pages", routings_path[raddress]))
-			bytes := []byte(aqua())
-			_, err := w.Write(bytes)
-			if err != nil {
-				fmt.Println(err.Error())
-				fmt.Println("[ 500] " + r.RequestURI + " : " + r.Method)
+			if routings_isaqua[raddress] {
+				writetmp(path.Join("pages", routings_path[raddress]))
+				bytes := []byte(aqua())
+				_, err := w.Write(bytes)
+				if err != nil {
+					fmt.Println(err.Error())
+					fmt.Println("[ 500] " + r.RequestURI + " : " + r.Method)
+				} else {
+					fmt.Println("[ 200] " + r.RequestURI + " : " + r.Method)
+				}
 			} else {
-				fmt.Println("[ 200] " + r.RequestURI + " : " + r.Method)
+				bytes, err := os.ReadFile(routings_path[raddress])
+				fmt.Println(routings_path[raddress])
+				_, werr := w.Write(bytes)
+				if err != nil || werr != nil {
+					fmt.Println(err.Error() + "\n\n" + werr.Error())
+					fmt.Println("[ 500] " + r.RequestURI + " : " + r.Method)
+				} else {
+					fmt.Println("[ 200] " + r.RequestURI + " : " + r.Method)
+				}
 			}
 		} else if slices.Contains(routings_pattern, "404") {
 			raddress := slices.Index(routings_pattern, "404")

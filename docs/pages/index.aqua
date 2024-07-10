@@ -1,19 +1,30 @@
 out "<!DOCTYPE html><html><head><title>Aquarium - powered by Aqua</title> \
 <style>@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'); \
 * {\
-margin: 0;\
-font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\
+    margin: 0;\
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\
 }\
 .top {\
-background-color: #52c1e0;\
-width: 100vw;\
-height: 20vh;\
-display: flex;\
-justify-content: center;\
-align-items: center;\
+    background-color: #52c1e0;\
+    width: 100vw;\
+    height: 20vh;\
+    display: flex;\
+    justify-content: center;\
+    align-items: center;\
 }\
 h1 {\
-font-size: 3rem;\
+    font-size: 3rem;\
+}\
+.top{\
+    text-align: center;\
+    color: #333;\
+}\
+.flex {\
+    display: flex;\
+    justify-content: center;\
+}\
+.flex div{\
+    \
 }\
 </style>"
 
@@ -21,9 +32,8 @@ out "</head><body>"
 
 out "<section class="top"><div>"
 out "<h1>Aquarium</h1>"
-out "<span>Frontend framework for Aqua</span>"
+out "<span>Frontend framework for Aqua<br\>\
+This site made by Aqua and Aquarium</span>"
 out "</div></section>"
-
-out "<p>Aqua, a language developed by Sakamotor, is attractive because of its learning cost and speed.<br/>What if Aqua could do web development?</p>"
 
 out "</body></html>"
