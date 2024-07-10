@@ -10,9 +10,6 @@
 # Static routing
 # [routing] [variable name]
 
-# Dynamic routing params
-# _p_[NAME]_at_[routing] [variable name]
-
 var routing _s_ "/index.aqua"
 
 # Special : Error Page Binding
