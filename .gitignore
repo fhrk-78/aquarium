@@ -4,4 +4,8 @@ src/windows
 **/tmp.aqua
 **/cache/*
 
+**/*.tar
+**/*.tar.gz
+**/*.zip
+
 .vscode/*

@@ -13,4 +13,4 @@ You can download installer from [here](https://e6nlaq.github.io/aqua/)
 
 2. Extract that
 
-3. Add PATH environment variable to that directory
+3. Add PATH environment variable to that directory's executable file of your system

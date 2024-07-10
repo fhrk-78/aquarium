@@ -6,15 +6,13 @@
 
 ## プロジェクトの作成
 
-=== 手動
+```ps1
+aqr create <プロジェクト名>
+```
 
-1. フォルダを作ります
+## ビルド
 
-2. `.aquarium`ファイルを書きます。詳細は[.aquariumファイルの書き方](configfile.md)をご覧ください
-
-3. 同じ階層に`public`ディレクトリと`pages`ディレクトリを作ります。詳しくは[フォルダ構成](folderstruct.md)を参照
-
-=== 初期化ツール
-
-!!! Warning
-    現在開発中です
+```ps1
+cd <.aquariumファイルのあるディレクトリへ>
+aqr build
+```

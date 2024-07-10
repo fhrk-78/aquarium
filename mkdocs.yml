@@ -45,4 +45,4 @@ markdown_extensions:
       alternate_style: true
 
 docs_dir: docsrc
-site_dir: docs/docs
+site_dir: docs
